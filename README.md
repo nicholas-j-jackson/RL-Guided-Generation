@@ -1,6 +1,6 @@
 # RLSyn+Reg: Reward-Guided Generation for Scientifically Meaningful Synthetic Data
 
-Code for the paper "Reward-Guided Generation for Scientifically Meaningful Synthetic Data" (Jackson et al., AMIA 2025).
+Code for the paper "Reward-Guided Generation for Scientifically Meaningful Synthetic Data" (Jackson et al., AMIA 2026).
 
 ## Overview
 
