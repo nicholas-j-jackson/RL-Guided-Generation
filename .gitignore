@@ -1,0 +1,10 @@
+preprocessings/ACS/data
+preprocessings/MIMIC/data
+
+Tuning_ACS/trial*
+Tuning_ACS_penalized/trial*
+Tuning_MIMIC/trial*
+Tuning_MIMIC_penalized/trial*
+
+*.csv
+*.pth

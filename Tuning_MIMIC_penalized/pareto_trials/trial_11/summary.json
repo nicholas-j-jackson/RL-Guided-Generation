@@ -1,0 +1,9 @@
+{
+  "trial_number": 11,
+  "reg_mae": 0.8620859720898952,
+  "s2r_auc": 0.857897588223206,
+  "params": {
+    "regression_lambda": 0.0059087042500415654,
+    "anneal_start": 0.5
+  }
+}

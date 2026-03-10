@@ -1,0 +1,3 @@
+[submodule "preprocessing/MIMIC/MIMICExtractEasy"]
+	path = preprocessing/MIMIC/MIMICExtractEasy
+	url = https://github.com/SphtKr/MIMICExtractEasy.git
