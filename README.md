@@ -41,7 +41,16 @@ If you use this code, please cite:
 
 **This work:**
 ```bibtex
-% Preprint citation coming soon
+@article{jackson_reward-guided_2026,
+	title = {Reward-{Guided} {Generation} {Improves} the {Scientific} {Utility} of {Synthetic} {Biomedical} {Data}},
+	url = {https://www.medrxiv.org/content/early/2026/03/16/2026.03.11.26348077},
+	doi = {10.64898/2026.03.11.26348077},
+	journal = {medRxiv},
+	publisher = {Cold Spring Harbor Laboratory Press},
+	author = {Jackson, Nicholas J. and Espinosa-Dice, Natalia and Yan, Chao and Malin, Bradley A.},
+	year = {2026},
+}
+
 ```
 
 **RLSyn (Espinosa-Dice et al., 2025):**
