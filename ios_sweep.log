@@ -1,0 +1,206 @@
+=== running scripts/eval_ACS.sh @ 09:02:15 ===
+Real data 0.8157760237719378
+Synthetic data 0.777726251276813
+Real data 0.8130506082273191
+Synthetic data 0.738245333828582
+Real data 0.8142533197139937
+Synthetic data 0.6822457052651127
+Using 21780 rows (50% of training data)
+Real data 0.8157760237719378
+Synthetic data 0.6559801281456031
+Using 21780 rows (50% of training data)
+Real data 0.8130506082273191
+Synthetic data 0.734702757916241
+Using 21780 rows (50% of training data)
+Real data 0.8142533197139937
+Synthetic data 0.7234892747701736
+Using 10890 rows (25% of training data)
+Real data 0.8157760237719378
+Synthetic data 0.6583339214411738
+Using 10890 rows (25% of training data)
+Real data 0.8130506082273191
+Synthetic data 0.7042861918469682
+Using 10890 rows (25% of training data)
+Real data 0.8142533197139937
+Synthetic data 0.6998779830996379
+Using 4356 rows (10% of training data)
+Real data 0.8157760237719378
+Synthetic data 0.7159305413687437
+Using 4356 rows (10% of training data)
+Real data 0.8130506082273191
+Synthetic data 0.6841515461045593
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/nick/RL_guided/RL/main.py", line 154, in <module>
+    main() 
+    ^^^^^^
+  File "/home/nick/RL_guided/RL/main.py", line 116, in main
+    df_syn = pd.read_csv(f"{H.OUT_DIR}/synthetic_rescaled.csv")[H.NUM_COLS+H.BIN_COLS+H.CAT_COLS]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'ACS/results/52_frac0.1/synthetic_rescaled.csv'
+Using 4356 rows (10% of training data)
+=== running scripts/eval_ACS_penalized.sh @ 09:05:40 ===
+Real data 0.8157760237719378
+Synthetic data 0.7104080230290649
+Real data 0.8130506082273191
+Synthetic data 0.7488769616491783
+Real data 0.8142533197139937
+Synthetic data 0.7388407465874268
+Using 21780 rows (50% of training data)
+Real data 0.8157760237719378
+Synthetic data 0.7304624384808246
+Using 21780 rows (50% of training data)
+Real data 0.8130506082273191
+Synthetic data 0.7629824496239206
+Using 21780 rows (50% of training data)
+Real data 0.8142533197139937
+Synthetic data 0.7255531618534683
+Using 10890 rows (25% of training data)
+Real data 0.8157760237719378
+Synthetic data 0.6877832667842882
+Using 10890 rows (25% of training data)
+Real data 0.8130506082273191
+Synthetic data 0.7432469124338379
+Using 10890 rows (25% of training data)
+Real data 0.8142533197139937
+Synthetic data 0.7223526789859782
+Using 4356 rows (10% of training data)
+Real data 0.8157760237719378
+Synthetic data 0.7392259262698486
+Using 4356 rows (10% of training data)
+Real data 0.8130506082273191
+Synthetic data 0.6673211997399944
+Using 4356 rows (10% of training data)
+Real data 0.8142533197139937
+Synthetic data 0.7305335685764696
+=== running scripts/eval_MIMIC.sh @ 09:08:50 ===
+Real data 0.975028489230137
+Synthetic data 0.8676268938332494
+Real data 0.9751293691270153
+Synthetic data 0.8325150852808758
+Real data 0.9743335388294196
+Synthetic data 0.8410114143735171
+Using 11038 rows (50% of training data)
+Real data 0.975028489230137
+Synthetic data 0.8033832128379009
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/nick/RL_guided/RL/main.py", line 154, in <module>
+    main() 
+    ^^^^^^
+  File "/home/nick/RL_guided/RL/main.py", line 116, in main
+    df_syn = pd.read_csv(f"{H.OUT_DIR}/synthetic_rescaled.csv")[H.NUM_COLS+H.BIN_COLS+H.CAT_COLS]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'MIMIC/results/51_frac0.5/synthetic_rescaled.csv'
+Using 11038 rows (50% of training data)
+Using 11038 rows (50% of training data)
+Real data 0.9743335388294196
+Synthetic data 0.827289880251826
+Using 5519 rows (25% of training data)
+Real data 0.975028489230137
+Synthetic data 0.827676586523193
+Using 5519 rows (25% of training data)
+Real data 0.9751293691270153
+Synthetic data 0.8112705262567955
+Using 5519 rows (25% of training data)
+Real data 0.9743335388294196
+Synthetic data 0.81673672215061
+Using 2208 rows (10% of training data)
+Real data 0.975028489230137
+Synthetic data 0.7819200807039175
+Using 2208 rows (10% of training data)
+Real data 0.9751293691270153
+Synthetic data 0.8156942965495338
+Using 2208 rows (10% of training data)
+Real data 0.9743335388294196
+Synthetic data 0.8184554166900185
+=== running scripts/eval_MIMIC_penalized.sh @ 09:15:37 ===
+Real data 0.975028489230137
+Synthetic data 0.8418464757421211
+Real data 0.9751293691270153
+Synthetic data 0.8679444786937921
+Real data 0.9743335388294196
+Synthetic data 0.8132563657083076
+Using 11038 rows (50% of training data)
+Real data 0.975028489230137
+Synthetic data 0.8129929570886809
+Using 11038 rows (50% of training data)
+Real data 0.9751293691270153
+Synthetic data 0.7801883091408395
+Using 11038 rows (50% of training data)
+Real data 0.9743335388294196
+Synthetic data 0.8078443460554092
+Using 5519 rows (25% of training data)
+Real data 0.975028489230137
+Synthetic data 0.8117151450615554
+Using 5519 rows (25% of training data)
+Real data 0.9751293691270153
+Synthetic data 0.8332044312428777
+Using 5519 rows (25% of training data)
+Real data 0.9743335388294196
+Synthetic data 0.8146668161183657
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/nick/RL_guided/RL/main.py", line 154, in <module>
+    main() 
+    ^^^^^^
+  File "/home/nick/RL_guided/RL/main.py", line 116, in main
+    df_syn = pd.read_csv(f"{H.OUT_DIR}/synthetic_rescaled.csv")[H.NUM_COLS+H.BIN_COLS+H.CAT_COLS]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "/home/nick/.conda/envs/misinfo/lib/python3.12/site-packages/pandas/io/common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'MIMIC/results/penalized/50_frac0.1/synthetic_rescaled.csv'
+Using 2208 rows (10% of training data)
+Using 2208 rows (10% of training data)
+Real data 0.9751293691270153
+Synthetic data 0.7802985297689103
+Using 2208 rows (10% of training data)
+Real data 0.9743335388294196
+Synthetic data 0.75465635449943
+=== ALL DONE @ 09:22:27 ===

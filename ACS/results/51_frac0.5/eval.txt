@@ -3,26 +3,28 @@ CWC: 0.0000
 DWD: 0.0000 (mean APD: 0.0000, mean AWD: 0.0000)
 
 --- Utility ---
-S2R AUC: 0.8143 | S2R Acc: 0.9161
+S2R AUC: 0.8131 | S2R Acc: 0.9148
 Regression MAE: 0.0000 | Coef Correlation: 1.0000
  | Real Model AUC: 161021.5233 | Syn Model AUC: 161021.5233
 
 --- Privacy ---
-Membership Inference AUC: 0.3360
+Membership Inference AUC: 0.5346
+TPR@FPR=0.1: 0.1270 | TPR@FPR=0.01: 0.0310
 
 --- Hyperparameters ---
 BATCH: 256, NOISE_DIM: 32, N_CRITIC: 5, GP_COEFF: 5, DISC_LR: 0.00045221495989078246, GEN LR: 0.00010010506549547287, G_HIDDEN_DIM: 256, D_HIDDEN_DIM: 256
 --- Fidelity ---
-CWC: 1571.3277
+CWC: 0.0016
 DWD: 0.1300 (mean APD: 0.0038, mean AWD: 0.0158)
 
 --- Utility ---
-S2R AUC: 0.7302 | S2R Acc: 0.9006
+S2R AUC: 0.7347 | S2R Acc: 0.9074
 Regression MAE: 12.0868 | Coef Correlation: 0.7606
  | Real Model AUC: 161021.5233 | Syn Model AUC: 161337.6826
 
 --- Privacy ---
-Membership Inference AUC: 0.4939
+Membership Inference AUC: 0.5036
+TPR@FPR=0.1: 0.1220 | TPR@FPR=0.01: 0.0140
 
 --- Hyperparameters ---
 BATCH: 256, NOISE_DIM: 32, N_CRITIC: 5, GP_COEFF: 5, DISC_LR: 0.00045221495989078246, GEN LR: 0.00010010506549547287, G_HIDDEN_DIM: 256, D_HIDDEN_DIM: 256
