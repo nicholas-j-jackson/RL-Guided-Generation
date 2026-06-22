@@ -114,6 +114,114 @@ def membership_inference_risk(train_df, test_df, synth_df, H):
 
     return auc(Sens, 1-Spec)
 
+
+# DOMIAS MIA (Breugel et al. 2023)
+# p_syn and p_ref are each estimated with scipy gaussian_kde and the membership score is the density ratio p_syn(x) / p_ref(x).
+from scipy.stats import gaussian_kde
+from sklearn.metrics import roc_curve
+from sklearn.preprocessing import StandardScaler
+
+
+def _ios_keep_cols(H):
+    """Columns to feed the KDE. We drop one dummy from each one-hot categorical
+    group: the K dummies in a group sum to 1, so keeping all of them makes the
+    data covariance singular and gaussian_kde fails. Numeric and binary columns
+    are kept as-is."""
+    keep = list(H.NUM_COLS) + list(H.BIN_COLS)
+    cat = list(H.CAT_COLS)
+    i = 0
+    for dim in H.CAT_DIMS:
+        keep += cat[i:i + dim][:-1]   # drop the last dummy of each group
+        i += dim
+    return keep
+
+
+def _ios_prep_matrix(df, H, keep_cols):
+    """Binarize the binary/categorical (one-hot) columns at 0.5, keep numeric
+    columns as-is, and return the reduced (non-collinear) column set as a matrix."""
+    df = df.copy()
+    bin_cat = [c for c in (list(H.BIN_COLS) + list(H.CAT_COLS)) if c in df.columns]
+    df[bin_cat] = (df[bin_cat] >= 0.5).astype(float)
+    return df[keep_cols].values.astype(float)
+
+
+def _ios_fit_logdensity(X, seed=0):
+    """Fit a Gaussian kernel density estimator to X (rows = samples) and return a
+    callable mapping rows -> log-density. Matches the DOMIAS 'kde' estimator
+    (scipy.stats.gaussian_kde). If the data covariance is still singular, retry
+    once with negligible jitter to make it positive-definite."""
+    try:
+        kde = gaussian_kde(X.T)
+    except np.linalg.LinAlgError:
+        rng = np.random.RandomState(seed)
+        kde = gaussian_kde((X + rng.normal(0.0, 1e-6, size=X.shape)).T)
+    return lambda Q: kde.logpdf(Q.T)
+
+
+def _ios_tpr_at_fpr(labels, scores, target_fpr):
+    """TPR at the largest achievable FPR <= target_fpr. This is the
+    'most-confidently-flagged records' view (Carlini et al.): it asks whether
+    the records the attack is *surest* about are actually members -- the
+    practically-relevant 'worst-case record' lens, not a worst-case adversary."""
+    fpr, tpr, _ = roc_curve(labels, scores)
+    idx = np.searchsorted(fpr, target_fpr, side="right") - 1
+    return float(tpr[max(idx, 0)])
+
+
+def inference_on_synthetic_risk(train_df, test_df, synth_df, H, seed=0, n_eval=1000):
+    """DOMIAS-style inference-on-synthetic membership inference attack.
+
+    Members are real training records; non-members are held-out real records.
+    A disjoint slice of the held-out real data serves as the population
+    reference, so no record is both scored and used to fit p_ref. Returns a dict
+    with the overall AUC plus TPR at low FPR (the most-exposed-record view).
+    Higher density-ratio score => more likely a training member; AUC ~ 0.5 means
+    a competent realistic attack cannot distinguish members from non-members.
+    """
+    rng = np.random.RandomState(seed)
+    keep = _ios_keep_cols(H)
+
+    # Fit p_syn on the released synthetic data.
+    n_syn = min(20_000, len(synth_df))
+    Xs = _ios_prep_matrix(synth_df.sample(n_syn, random_state=seed), H, keep)
+
+    # Held-out real data supplies both the non-member queries and the population
+    # reference for p_ref; the two are kept disjoint. We fix the number of member
+    # and non-member queries at n_eval each so the evaluation size is identical
+    # across datasets and runs; the remaining held-out records fit p_ref.
+    perm = rng.permutation(len(test_df))
+    n_query = min(n_eval, len(train_df), len(test_df) - 1)
+    nonmem_rows = test_df.iloc[perm[:n_query]]          # non-member queries
+    ref_rows    = test_df.iloc[perm[n_query:]]          # disjoint population reference
+
+    Xm = _ios_prep_matrix(train_df.sample(n_query, random_state=seed), H, keep)   # members
+    Xn = _ios_prep_matrix(nonmem_rows, H, keep)                                   # non-members
+    Xref = _ios_prep_matrix(ref_rows, H, keep)                                    # reference
+
+    # Standardize features using statistics from the real records (shouldn't matter for Gaussian KDEs, but DOMIAS uses it)
+    scaler = StandardScaler().fit(np.vstack([Xm, Xn, Xref]))
+    Xs, Xm, Xn, Xref = (scaler.transform(Xs), scaler.transform(Xm),
+                        scaler.transform(Xn), scaler.transform(Xref))
+
+    logp_syn = _ios_fit_logdensity(Xs, seed=seed)
+    logp_ref = _ios_fit_logdensity(Xref, seed=seed)
+
+    Xq = np.vstack([Xm, Xn])
+    labels = np.concatenate([np.ones(len(Xm)), np.zeros(len(Xn))])
+    scores = logp_syn(Xq) - logp_ref(Xq)                                        # DOMIAS log-ratio
+
+    finite = np.isfinite(scores)
+    scores, labels = scores[finite], labels[finite]
+
+    return {
+        "auc": float(roc_auc_score(labels, scores)),
+        "tpr_at_fpr_0.1": _ios_tpr_at_fpr(labels, scores, 0.1),
+        "tpr_at_fpr_0.01": _ios_tpr_at_fpr(labels, scores, 0.01),
+        "n_eval_per_class": int(len(Xm)),
+        "n_ref": int(len(Xref)),
+    }
+
+
 from scipy.stats import wasserstein_distance
 def plot_numeric_histograms(df_real, df_syn, out_dir, num_cols):
     out = Path(out_dir) / "numeric_histograms"
@@ -567,8 +675,15 @@ def evaluate_model(df_train, df_test, df_syn, H):
     #train on synthetic data and test on real data to hold out 
     s2r_auc, s2r_acc = classification_utility(df_syn[cols], df_test[cols], H.LABEL)
 
-    # Membership inference risk via simple similarity attack
-    mem_auc = membership_inference_risk(df_train[cols], df_test[cols], df_syn[cols], H) 
+    # Membership inference via the inference-on-synthetic (DOMIAS-style) attack.
+    # This is the reported MIA; fixed 1000 members / 1000 non-members so the
+    # evaluation size is identical across datasets, seeds, and fractions.
+    try:
+        ios = inference_on_synthetic_risk(df_train[cols], df_test[cols], df_syn[cols], H, n_eval=1000)
+    except Exception as e:
+        ios = {"auc": float('nan'), "tpr_at_fpr_0.1": float('nan'),
+               "tpr_at_fpr_0.01": float('nan'), "error": str(e)}
+    mem_auc = ios['auc']
 
     # Regression analysis
     regression_results = regression_analysis(df_train, df_test, df_syn, H)
@@ -588,6 +703,8 @@ def evaluate_model(df_train, df_test, df_syn, H):
             f.write(f" | Real Model AUC: {regression_results['real_model_auc']:.4f} | Syn Model AUC: {regression_results['syn_model_auc']:.4f}\n")
         f.write(f"\n--- Privacy ---\n")
         f.write(f"Membership Inference AUC: {mem_auc:.4f}\n")
+        f.write(f"TPR@FPR=0.1: {ios['tpr_at_fpr_0.1']:.4f} | "
+                f"TPR@FPR=0.01: {ios['tpr_at_fpr_0.01']:.4f}\n")
         f.write(f"\n--- Hyperparameters ---\n")
         f.write(f"BATCH: {H.BATCH}, NOISE_DIM: {H.NOISE_DIM}, N_CRITIC: {H.DISC_STEPS}, GP_COEFF: {H.GRADIENT_PENALTY}, DISC_LR: {H.D_LR}, GEN LR: {H.G_LR}, G_HIDDEN_DIM: {H.G_H}, D_HIDDEN_DIM: {H.D_H}\n")
 
